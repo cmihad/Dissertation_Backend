@@ -1,35 +1,43 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = new Sequelize(
-  'postgresql://postgres:admin@localhost:5432/rec'
+  'postgresql://postgres:admin@localhost:5432/dec'
 )
 
-const User = sequelize.define(
-  'User',
-  {
-    // Model attributes are defined here
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      allowNull: false,
-      primaryKey: true,
-    },
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+const User = sequelize.define('user', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
   },
-  {
-    // Other model options go here
-  }
-)
-
-module.exports = User
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  age: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  phoneNumber: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  address: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  isAdmin: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false, // By default, users are not admins
+  },
+})
+module.exports = { User, sequelize }
