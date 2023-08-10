@@ -111,4 +111,7 @@ router.get('/profile', async (req, res, next) => {
     next(err)
   }
 })
+router.get('/test', async (req, res, next) => {
+  res.send('HELLO WORLD test purposes')
+})
 module.exports = router
