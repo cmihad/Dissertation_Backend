@@ -8,11 +8,11 @@ const reviewRoutes = require('./src/Routes/review')
 const errorHandler = require('./src/Middleware/errorHandler')
 const { Pool } = require('pg')
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'dec',
-  password: 'admin',
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASS,
+  port: process.env.DB_PORT,
 })
 
 const { syncDB, sequelize } = require('./src/Database/db')
@@ -27,9 +27,11 @@ app.use(errorHandler)
 // parse application/json
 app.use(express.json())
 app.use('/user', userRoutes)
+
 // app.use('/review', reviewRoutes)
 // app.use('/product', productRoutes)
 // const pool = require('./src/Database/Data')
+
 app.get('/', (req, res) => {
   res.send('Hello World')
 })

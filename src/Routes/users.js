@@ -6,11 +6,11 @@ const { getUserByEmail } = require('../Util/userUtil')
 const { Pool } = require('pg')
 const { errors } = require('pg-promise')
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'dec',
-  password: 'admin',
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASS,
+  port: process.env.DB_PORT,
 })
 const secret = process.env.JWT_SECRET
 const router = express.Router()
@@ -53,8 +53,9 @@ router.post('/register', async (req, res) => {
 router.get('/login', async (req, res, next) => {
   try {
     const { email, password } = req.body
+    console.log(email, 'email okayyy')
     const user = await getUserByEmail(email)
-
+    console.log(user.email, 'check from database')
     if (!user) {
       const err = new Error('User not found')
       err.status = 404

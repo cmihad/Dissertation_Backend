@@ -1,6 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = new Sequelize(
-  'postgresql://postgres:admin@localhost:5432/dec'
+  'postgresql://postgres:admin@144.126.238.113:5432/postgres'
 )
 
 const User = sequelize.define('user', {
