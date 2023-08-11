@@ -53,7 +53,6 @@ router.post('/register', async (req, res) => {
 router.get('/login', async (req, res, next) => {
   try {
     const { email, password } = req.body
-    console.log(email, 'email okayyy')
     const user = await getUserByEmail(email)
     if (!user) {
       const err = new Error('User not found')

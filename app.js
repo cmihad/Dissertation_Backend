@@ -1,7 +1,9 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 require('dotenv').config()
-
+// Use the cors middleware
+app.use(cors())
 const userRoutes = require('./src/Routes/users')
 const productRoutes = require('./src/Routes/Products')
 const reviewRoutes = require('./src/Routes/review')
