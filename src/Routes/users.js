@@ -55,7 +55,6 @@ router.get('/login', async (req, res, next) => {
     const { email, password } = req.body
     console.log(email, 'email okayyy')
     const user = await getUserByEmail(email)
-    console.log(user.email, 'check from database')
     if (!user) {
       const err = new Error('User not found')
       err.status = 404
