@@ -5,6 +5,7 @@ require('dotenv').config()
 // Use the cors middleware
 app.use(cors())
 const userRoutes = require('./src/Routes/users')
+const adminRoutes = require('./src/Routes/admin')
 const productRoutes = require('./src/Routes/Products')
 const reviewRoutes = require('./src/Routes/review')
 const errorHandler = require('./src/Middleware/errorHandler')
@@ -29,6 +30,7 @@ app.use(errorHandler)
 // parse application/json
 app.use(express.json())
 app.use('/user', userRoutes)
+app.use('/admin', adminRoutes)
 
 // app.use('/review', reviewRoutes)
 // app.use('/product', productRoutes)
