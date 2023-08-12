@@ -2,7 +2,12 @@ const express = require('express')
 const User = require('../Models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const { getUserByEmail } = require('../Util/userUtil')
+const {
+  getUserByEmail,
+  getNumberOfUsers,
+  deleteUserByEmail,
+  getAllUsers,
+} = require('../Util/userUtil')
 const { Pool } = require('pg')
 const { errors } = require('pg-promise')
 const pool = new Pool({
@@ -113,4 +118,35 @@ router.get('/profile', async (req, res, next) => {
 router.get('/test', async (req, res, next) => {
   res.send('HELLO WORLD test purposes')
 })
+
+router.get('/numberOfUsers', async (req, res, next) => {
+  try {
+    const number = await getNumberOfUsers()
+    res.json(number)
+  } catch (err) {
+    next(err)
+    console.error('Error fetching number of users:', err)
+  }
+})
+router.delete('/deleteUserByEmail', async (req, res, next) => {
+  try {
+    const { email } = req.body
+
+    const deleted = await deleteUserByEmail(email)
+    res.json(deleted)
+  } catch (err) {
+    next(err)
+    console.error('Error deleting the user', err)
+  }
+})
+router.get('/getAllUsers', async (req, res, next) => {
+  try {
+    const allUsers = await getAllUsers()
+    res.json(allUsers)
+  } catch (err) {
+    next(err)
+    console.error('Error deleting the user', err)
+  }
+})
+
 module.exports = router
