@@ -6,7 +6,7 @@ const {
   getAllUsers,
 } = require('../Util/userUtil')
 const isAdmin = require('../Middleware/isAdmin')
-router.post('/numberOfUsers', isAdmin, async (req, res, next) => {
+router.get('/numberOfUsers', isAdmin, async (req, res, next) => {
   try {
     const number = await getNumberOfUsers()
     res.json(number)
