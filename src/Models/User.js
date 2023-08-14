@@ -40,7 +40,7 @@ const User = sequelize.define('user', {
     defaultValue: false, // By default, users are not admins
   },
 })
-const UserProfile = sequelize.define('userProfile', {
+const Profile = sequelize.define('Profile', {
   userId: {
     type: DataTypes.INTEGER,
     references: {
@@ -83,7 +83,7 @@ const UserProfile = sequelize.define('userProfile', {
   },
 })
 
-User.hasOne(UserProfile, { foreignKey: 'userId' })
-UserProfile.belongsTo(User, { foreignKey: 'userId' })
+User.hasOne(Profile, { foreignKey: 'userId' })
+Profile.belongsTo(User, { foreignKey: 'userId' })
 
-module.exports = { User, UserProfile, sequelize }
+module.exports = { User, Profile, sequelize }
