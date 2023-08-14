@@ -1,5 +1,6 @@
 const { Sequelize } = require('sequelize')
-const { User } = require('../Models/User')
+const { User, UserProfile } = require('../Models/User')
+
 // Set up a connection
 // const sequelize = new Sequelize('dec', 'postgres', 'admin', {
 //   host: 'localhost',
@@ -28,6 +29,9 @@ User.sync({ force: false })
   .then(() =>
     console.log('User table created successfully sadjhasdjkgjasgkdjgkasdjgk')
   )
+  .catch((err) => console.error('Failed to create User table:', err))
+UserProfile.sync({ force: false })
+  .then(() => console.log('User Addiotnal info successfully created'))
   .catch((err) => console.error('Failed to create User table:', err))
 const syncDB = async () => {
   try {

@@ -114,4 +114,53 @@ router.get('/test', async (req, res, next) => {
   res.send('HELLO WORLD test purposes')
 })
 
+router.post('/profile', async (req, res) => {
+  try {
+    const {
+      userId,
+      allergies,
+      skinInfo,
+      hairInfo,
+      postalCode,
+      annualIncome,
+      gender,
+      ethnicity,
+      isCollegeGraduate,
+    } = req.body
+
+    const time = new Date()
+    const createdAt = time.toISOString()
+    const updatedAt = time.toISOString()
+
+    const query = {
+      text: 'INSERT INTO userProfiles("userId", allergies, "skinInfo", "hairInfo", "postalCode", "annualIncome", gender, ethnicity, "isCollegeGraduate", "createdAt", "updatedAt") VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)',
+      values: [
+        userId,
+        allergies,
+        skinInfo,
+        hairInfo,
+        postalCode,
+        annualIncome,
+        gender,
+        ethnicity,
+        isCollegeGraduate,
+        createdAt,
+        updatedAt,
+      ],
+    }
+
+    await pool.query(query)
+    res.json({
+      status: 'success',
+      message: 'UserProfile data inserted successfully',
+    })
+  } catch (err) {
+    console.error(err)
+    res.json({
+      status: 'error',
+      message: 'There was an error processing your request',
+    })
+  }
+})
+
 module.exports = router

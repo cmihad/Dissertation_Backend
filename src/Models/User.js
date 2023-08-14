@@ -40,4 +40,50 @@ const User = sequelize.define('user', {
     defaultValue: false, // By default, users are not admins
   },
 })
-module.exports = { User, sequelize }
+const UserProfile = sequelize.define('userProfile', {
+  userId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: User,
+      key: 'id',
+    },
+    allowNull: false,
+  },
+  allergies: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: true,
+  },
+  skinInfo: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  hairInfo: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  postalCode: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  annualIncome: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+  },
+  gender: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  ethnicity: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  isCollegeGraduate: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+  },
+})
+
+User.hasOne(UserProfile, { foreignKey: 'userId' })
+UserProfile.belongsTo(User, { foreignKey: 'userId' })
+
+module.exports = { User, UserProfile, sequelize }
