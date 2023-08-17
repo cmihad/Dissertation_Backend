@@ -1,8 +1,8 @@
-const { User } = require('../Models/User') // Import User model
+const { Users } = require('../Models/User') // Import User model
 
 const getUserByEmail = async (email) => {
   try {
-    const user = await User.findOne({ where: { email: email } })
+    const user = await Users.findOne({ where: { email: email } })
     if (user) {
       console.log(user.toJSON())
       return user
@@ -16,7 +16,7 @@ const getUserByEmail = async (email) => {
 
 const getNumberOfUsers = async () => {
   try {
-    const number = await User.count()
+    const number = await Users.count()
     console.log(`Number of users: ${number}`)
     return number
   } catch (error) {
@@ -25,7 +25,7 @@ const getNumberOfUsers = async () => {
 }
 const deleteUserByEmail = async (email) => {
   try {
-    const result = await User.destroy({ where: { email: email } })
+    const result = await Users.destroy({ where: { email: email } })
     if (result) {
       console.log(`User with email ${email} has been deleted.`)
     } else {
@@ -37,7 +37,7 @@ const deleteUserByEmail = async (email) => {
 }
 const getAllUsers = async () => {
   try {
-    const users = await User.findAll()
+    const users = await Users.findAll()
     if (users && users.length) {
       console.log('List of all users:')
       users.forEach((user) => {
@@ -52,11 +52,11 @@ const getAllUsers = async () => {
     console.error('Error occurred:', error)
   }
 }
-// console.log(getUserByEmail('cmihad@gmail.com10'))rs
 
 module.exports = {
   getUserByEmail,
   getNumberOfUsers,
   deleteUserByEmail,
   getAllUsers,
+  deleteUserByEmail,
 }

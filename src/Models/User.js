@@ -1,9 +1,9 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const sequelize = new Sequelize(
-  'postgresql://postgres:admin@144.126.238.113:5432/postgres'
+  `postgresql://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`
 )
 
-const User = sequelize.define('user', {
+const Users = sequelize.define('users', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -40,13 +40,14 @@ const User = sequelize.define('user', {
     defaultValue: false, // By default, users are not admins
   },
 })
-const Profile = sequelize.define('Profile', {
+const Profile = sequelize.define('profile', {
   userId: {
     type: DataTypes.INTEGER,
     references: {
-      model: User,
+      model: Users,
       key: 'id',
     },
+    unique: true,
     allowNull: false,
   },
   allergies: {
@@ -83,7 +84,7 @@ const Profile = sequelize.define('Profile', {
   },
 })
 
-User.hasOne(Profile, { foreignKey: 'userId' })
-Profile.belongsTo(User, { foreignKey: 'userId' })
+Users.hasOne(Profile, { foreignKey: 'userId' })
+Profile.belongsTo(Users, { foreignKey: 'userId' })
 
-module.exports = { User, Profile, sequelize }
+module.exports = { Users, Profile, sequelize }
