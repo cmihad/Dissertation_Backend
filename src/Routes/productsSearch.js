@@ -6,42 +6,55 @@ const { errors } = require('pg-promise')
 const secret = process.env.JWT_SECRET
 const router = express.Router()
 
-router.get('/test', async (req, res) => {
-  res.send('testing')
-})
-router.get('/tesco', async (req, res) => {
+router.post('/tesco', async (req, res) => {
   const url = req.body.url
-  async function fetchData(url) {
-    const response = await axios.get(url)
-    return response.data
+
+  if (!url) {
+    return res.status(400).send({ error: 'URL is required' })
   }
 
-  async function extractData() {
-    const html = await fetchData(url)
-    const $ = cheerio.load(html)
-
-    const products = []
-
-    $('.product-details--wrapper').each((index, element) => {
-      const productName = $(element).find('h3').text()
-      const price = $(element).find('p').text()
-      const pricePerUnit = $(element).find('p').text()
-
-      products.push({
-        productName,
-        price,
-        pricePerUnit,
-      })
-    })
-
-    return products
+  try {
+    const products = await extractData(url)
+    res.send(products)
+  } catch (error) {
+    console.error('Error fetching and parsing data:', error)
+    res.status(500).send({ error: 'Failed to fetch and parse data' })
   }
-
-  // Example usage:
-  extractData().then((data) => {
-    console.log(JSON.stringify(data, null, 2))
-  })
 })
+
+async function fetchData(url) {
+  const response = await axios.get(url, {
+    timeout: 4000,
+  })
+  return response.data
+}
+
+async function extractData(url) {
+  const html = await fetchData(url)
+  const $ = cheerio.load(html)
+
+  const products = []
+
+  $('.product-details--wrapper').each((index, element) => {
+    const productImage = $('.product-image__container img').attr('src')
+    const productName = $(element).find('h3').text()
+    const price = $(element).find('p').text()
+    const pricePerUnit = $(element).find('p').text()
+    const url = $(element)
+      .find('a[data-auto="product-tile--title"]')
+      .attr('href')
+    products.push({
+      productImage,
+      productName,
+      price,
+      pricePerUnit,
+      url,
+    })
+  })
+
+  return products
+}
+
 router.get('/sainsbury', async (req, res) => {
   const url = req.body.url
   async function fetchData(url) {
@@ -90,37 +103,43 @@ router.get('/sainsbury', async (req, res) => {
   })
 })
 
-router.get('/superdrug', async (req, res) => {
-  const URL = req.body.url // Replace with the actual URL
+router.post('/superdrug', async (req, res) => {
+  try {
+    const url = req.body.url
 
-  axios
-    .get(URL)
-    .then((response) => {
-      const $ = cheerio.load(response.data)
-      const products = []
-
-      $('mp-product-list-item').each((index, element) => {
-        const product = {
-          imageUrl: $(element)
-            .find('.cx-product-image img')
-            .attr('data-srcset')
-            .split(' ')[0],
-          productName: $(element).find('.cx-product-name').text().trim(),
-          productPrice: $(element)
-            .find('meta[itemprop="price"]')
-            .attr('content'),
-          pricePerUnit: $(element).find('.price__per-unit').text().trim(),
-        }
-
-        products.push(product)
-      })
-
-      console.log(products)
+    const response = await axios.get(url, {
+      timeout: 5000, // Adding a 4-second timeout as previously discussed
     })
-    .catch((error) => {
-      console.error('Error fetching the URL:', error)
+
+    const $ = cheerio.load(response.data)
+    const products = []
+
+    $('mp-product-list-item').each((index, element) => {
+      const product = {
+        productImage: $(element)
+          .find('.cx-product-image img')
+          .attr('data-srcset')
+          .split(' ')[0],
+        productName: $(element).find('.cx-product-name').text().trim(),
+        price: $(element).find('meta[itemprop="price"]').attr('content'),
+        pricePerUnit: $(element).find('.price__per-unit').text().trim(),
+        url: $(element)
+          .find('.product-list-item__info .cx-product-name')
+          .attr('href'),
+      }
+
+      products.push(product)
     })
+
+    console.log(products)
+
+    res.json(products)
+  } catch (error) {
+    console.error('Error fetching the URL:', error)
+    res.status(500).send('Internal Server Error')
+  }
 })
+
 router.get('/boots', async (req, res) => {
   const url = req.body.url // Replace with the actual URL
 

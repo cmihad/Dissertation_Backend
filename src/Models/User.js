@@ -83,8 +83,130 @@ const Profile = sequelize.define('profile', {
     allowNull: true,
   },
 })
-
+const Orders = sequelize.define('orders', {
+  userId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Users,
+      key: 'id',
+    },
+    allowNull: false,
+  },
+  userEmail: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isEmail: false,
+    },
+  },
+  productName: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  price: {
+    type: DataTypes.FLOAT,
+    allowNull: true,
+  },
+  url: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  purchaseDate: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    defaultValue: DataTypes.NOW,
+  },
+})
+const Reviews = sequelize.define('reviews', {
+  userId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Users, // Assuming Users is defined
+      key: 'id',
+    },
+    allowNull: false,
+  },
+  // productId: {
+  //   type: DataTypes.INTEGER,
+  //   references: {
+  //     model: Products, // Assuming Products is defined
+  //     key: 'id',
+  //   },
+  //   allowNull: false,
+  // },
+  rating: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    validate: {
+      min: 0,
+      max: 5,
+    },
+  },
+  comment: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  reviewDate: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    defaultValue: DataTypes.NOW,
+  },
+})
 Users.hasOne(Profile, { foreignKey: 'userId' })
 Profile.belongsTo(Users, { foreignKey: 'userId' })
+Users.hasMany(Orders, { foreignKey: 'userId' })
+Orders.belongsTo(Users, { foreignKey: 'userId' })
+Users.hasMany(Reviews, { foreignKey: 'userId' })
+const fetchUserWithProfileById = async (userId) => {
+  try {
+    const userWithProfile = await Users.findOne({
+      where: { id: userId },
+      include: [
+        {
+          model: Profile,
+          required: false, // This makes it a LEFT JOIN
+        },
+      ],
+    })
 
-module.exports = { Users, Profile, sequelize }
+    if (!userWithProfile) {
+      throw new Error('User not found')
+    }
+
+    return userWithProfile.toJSON()
+  } catch (error) {
+    console.error('Error fetching user with profile:', error)
+    throw error
+  }
+}
+const fetchUserWithOrdersById = async (userId) => {
+  try {
+    const userWithOrders = await Users.findOne({
+      where: { id: userId },
+      include: [
+        {
+          model: Orders, // Replace with your Orders model
+          required: false, // This makes it a LEFT JOIN
+        },
+      ],
+    })
+
+    if (!userWithOrders) {
+      throw new Error('User not found')
+    }
+
+    return userWithOrders.toJSON()
+  } catch (error) {
+    console.error('Error fetching user with orders:', error)
+    throw error
+  }
+}
+
+module.exports = {
+  Users,
+  Profile,
+  sequelize,
+  fetchUserWithProfileById,
+  Orders,
+  fetchUserWithOrdersById,
+}

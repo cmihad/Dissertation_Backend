@@ -1,5 +1,5 @@
 const { Sequelize } = require('sequelize')
-const { Users, Profile } = require('../Models/User')
+const { Users, Profile, Orders } = require('../Models/User')
 
 // Set up a connection
 // const sequelize = new Sequelize('dec', 'postgres', 'admin', {
@@ -26,12 +26,13 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
 })
 
 Users.sync({ force: false })
-  .then(() =>
-    console.log('User table created successfully sadjhasdjkgjasgkdjgkasdjgk')
-  )
+  .then(() => console.log('User table created successfully '))
   .catch((err) => console.error('Failed to create User table:', err))
 Profile.sync({ force: false })
-  .then(() => console.log('User Addiotnal info successfully created'))
+  .then(() => console.log('User Additional info successfully created'))
+  .catch((err) => console.error('Failed to create User table:', err))
+Orders.sync({ force: false })
+  .then(() => console.log('Oder Table successfully created'))
   .catch((err) => console.error('Failed to create User table:', err))
 const syncDB = async () => {
   try {

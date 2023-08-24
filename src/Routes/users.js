@@ -1,5 +1,6 @@
 const express = require('express')
-const User = require('../Models/User')
+const { Users, fetchUserWithProfileById } = require('../Models/User')
+const Profile = require('../Models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { getUserByEmail, deleteUserByEmail } = require('../Util/userUtil')
@@ -65,9 +66,8 @@ router.post('/login', async (req, res, next) => {
         const token = jwt.sign({ userId: user.id }, secret, {
           expiresIn: '90d',
         })
-
-        // Return the token to the client
-        res.json({ token, user })
+        const userData = await fetchUserWithProfileById(user.id)
+        res.json({ token, userData })
       } else {
         err.status = 404
         next(err)
@@ -98,6 +98,7 @@ router.get('/logout', async (req, res, next) => {
 router.get('/profileByEmail', async (req, res, next) => {
   try {
     const email = req.query.email // Extract email from query parameters
+    console.log(email, 'check email')
     const user = await getUserByEmail(email)
 
     if (!user) {
@@ -105,7 +106,8 @@ router.get('/profileByEmail', async (req, res, next) => {
       err.status = 404
       next(err)
     } else {
-      res.json(user) // Send the user's data in response
+      const userData = await fetchUserWithProfileById(user.id)
+      res.json({ userData })
     }
   } catch (err) {
     next(err)
