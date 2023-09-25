@@ -87,6 +87,7 @@ app.get('/test', (req, res) => {
       const productName = $(element).find('h3').text()
       const price = $(element).find('p').text()
       const pricePerUnit = $(element).find('p').text()
+      const company = 'tesco'
 
       products.push({
         productName,

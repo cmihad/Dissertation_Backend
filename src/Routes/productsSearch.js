@@ -43,12 +43,14 @@ async function extractData(url) {
     const url = $(element)
       .find('a[data-auto="product-tile--title"]')
       .attr('href')
+    const company = 'tesco'
     products.push({
       productImage,
       productName,
       price,
       pricePerUnit,
       url,
+      company,
     })
   })
 
@@ -126,6 +128,7 @@ router.post('/superdrug', async (req, res) => {
         url: $(element)
           .find('.product-list-item__info .cx-product-name')
           .attr('href'),
+        company: 'superdrug',
       }
 
       products.push(product)

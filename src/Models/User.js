@@ -152,11 +152,32 @@ const Reviews = sequelize.define('reviews', {
     defaultValue: DataTypes.NOW,
   },
 })
+const SearchedTerms = sequelize.define('searched', {
+  userId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Users,
+      key: 'id',
+    },
+    allowNull: false,
+  },
+  searchTerm: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  searchDate: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    defaultValue: DataTypes.NOW,
+  },
+})
 Users.hasOne(Profile, { foreignKey: 'userId' })
 Profile.belongsTo(Users, { foreignKey: 'userId' })
 Users.hasMany(Orders, { foreignKey: 'userId' })
 Orders.belongsTo(Users, { foreignKey: 'userId' })
 Users.hasMany(Reviews, { foreignKey: 'userId' })
+Users.hasMany(SearchedTerms, { foreignKey: 'userId' })
+SearchedTerms.belongsTo(Users, { foreignKey: 'userId' })
 const fetchUserWithProfileById = async (userId) => {
   try {
     const userWithProfile = await Users.findOne({
@@ -201,6 +222,28 @@ const fetchUserWithOrdersById = async (userId) => {
     throw error
   }
 }
+const fetchUserWithSearchedItem = async (userId) => {
+  try {
+    const searchTerm = await Users.findOne({
+      where: { id: userId },
+      include: [
+        {
+          model: SearchedTerms, // Replace with your Orders model
+          required: false, // This makes it a LEFT JOIN
+        },
+      ],
+    })
+
+    if (!searchTerm) {
+      throw new Error('User not found')
+    }
+
+    return searchTerm.toJSON()
+  } catch (error) {
+    console.error('Error fetching user with orders:', error)
+    throw error
+  }
+}
 
 module.exports = {
   Users,
@@ -209,4 +252,5 @@ module.exports = {
   fetchUserWithProfileById,
   Orders,
   fetchUserWithOrdersById,
+  fetchUserWithSearchedItem,
 }

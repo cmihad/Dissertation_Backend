@@ -11,10 +11,6 @@ const pool = new Pool({
 
 const router = express.Router()
 
-router.get('/test', async (req, res, next) => {
-  res.send('HELLO WORLD test purposes')
-})
-
 /**
  * @route POST /create
  * @group Search - Operations related to user searches
@@ -60,6 +56,7 @@ router.post('/create', async (req, res) => {
 
 router.get('/:userId', async (req, res, next) => {
   try {
+    console.log('try atleast')
     const userId = req.params.userId
 
     if (!userId) {
