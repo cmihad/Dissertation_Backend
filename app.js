@@ -54,12 +54,10 @@ app.get('/test_sc', (req, res) => {
     console.log(url)
     const { data } = await axios.get(url)
 
-    // Load HTML content
     const $ = cheerio.load(data)
 
     const children = []
 
-    // For direct children of an element with class 'your-class'
     $('.TextSizeWrap > *').each((index, element) => {
       children.push($(element).text().trim())
     })
@@ -67,7 +65,6 @@ app.get('/test_sc', (req, res) => {
     console.log(children)
   }
 
-  // Use the function
   scrapeProducts('https://www.sportsdirect.com/adidas/adidas-running').then(
     (res) => console.log(res)
   )
@@ -101,7 +98,6 @@ app.get('/test', (req, res) => {
     return products
   }
 
-  // Example usage:
   extractData().then((data) => {
     console.log(JSON.stringify(data, null, 2))
   })
