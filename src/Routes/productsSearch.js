@@ -56,7 +56,11 @@ async function extractData(url) {
     const productImage = allImages[index]
 
     const productName = $(element).find('h3').text()
-    const price = $(element).find('p').text()
+    const price1 = $(element)
+      .find('p')
+      .text()
+      .match(/£(\d+\.\d+)/)
+    const price = price1[1]
     const pricePerUnit = $(element).find('p').text()
     const url = $(element)
       .find('a[data-auto="product-tile--title"]')
